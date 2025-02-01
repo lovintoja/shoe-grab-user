@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabUserManagement", "s
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabUserManagementTests", "shoe-grab-tests\ShoeGrabUserManagementTests.csproj", "{BB5F71D6-A746-4935-A2EE-E88B83B2791C}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabCommonModels", "shoe-grab-user\Common\shoe-grab-common-lib\ShoeGrabCommonModels.csproj", "{A1202009-D8F7-4798-AD8B-94E7741BE7B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabCommonModels", "shoe-grab-common\shoe-grab-common-lib\ShoeGrabCommonModels.csproj", "{A1202009-D8F7-4798-AD8B-94E7741BE7B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

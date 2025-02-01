@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="Common\shoe-grab-common-lib\ShoeGrabCommonModels.csproj" />
+    <ProjectReference Include="..\shoe-grab-common\shoe-grab-common-lib\ShoeGrabCommonModels.csproj" />
   </ItemGroup>
 
 </Project>
