@@ -1,3 +1,6 @@
 [submodule "Common/shoe-grab-common-lib"]
 	path = shoe-grab-common/shoe-grab-common-lib
 	url = https://github.com/lovintoja/shoe-grab-common-lib.git
+[submodule "shoe-grab-common/shoe-grab-protos"]
+	path = shoe-grab-common/shoe-grab-protos
+	url = https://github.com/lovintoja/shoe-grab-protos.git
