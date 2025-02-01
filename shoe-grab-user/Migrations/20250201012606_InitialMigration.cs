@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
+using ShoeGrabCommonModels;
 
 #nullable disable
 
@@ -56,6 +57,14 @@ namespace ShoeGrabUserManagement.Migrations
                 table: "Profiles",
                 column: "UserId",
                 unique: true);
+
+            var passwordHash = "+0JUfw8ZJlZ0MEs9gf4VvcnjhWY59BZcn/Pg4FvpQNbrksULrNOI+Fc9klYSQ+EM";
+
+            migrationBuilder.InsertData(
+                table: "Users",
+                columns: new[] { "Username", "Email", "PasswordHash", "Role" },
+                values: new object[] { "admin", "admin@gmail.com", passwordHash, UserRole.Admin }
+            );
         }
 
         /// <inheritdoc />
