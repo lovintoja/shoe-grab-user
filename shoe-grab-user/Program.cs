@@ -2,12 +2,15 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ShoeGrabCommonModels.Contexts;
 using ShoeGrabMonolith.Extensions;
+using ShoeGrabUserManagement.Grpc;
 using ShoeGrabUserManagement.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Controllers
 builder.Services.AddControllers();
+
+builder.Services.AddGrpc();
 
 //Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -74,6 +77,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.MapGrpcService<UserManagementService>();
 
 app.MapControllers();
 
