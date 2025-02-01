@@ -2,10 +2,10 @@
 using ShoeGrabUserManagement.Models.Dto;
 using ShoeGrabCommonModels.Contexts;
 using Microsoft.EntityFrameworkCore;
-using ShoeGrabCommonModels;
 using ShoeGrabUserManagement.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using User = ShoeGrabCommonModels.User;
 
 namespace ShoeGrabUserManagement.Controllers;
 [ApiController]

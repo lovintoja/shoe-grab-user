@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ShoeGrabCommonModels.Contexts;
 using ShoeGrabMonolith.Extensions;
+using ShoeGrabOrderManagement.Database.Mappers;
 using ShoeGrabUserManagement.Grpc;
 using ShoeGrabUserManagement.Services;
 
@@ -11,6 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 builder.Services.AddGrpc();
+builder.Services.AddAutoMapper(typeof(GrpcMappingProfile));
 
 //Swagger
 builder.Services.AddSwaggerGen(c =>

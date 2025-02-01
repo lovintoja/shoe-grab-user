@@ -20,7 +20,7 @@ public class UserManagementService : UserManagement.UserManagementBase
         var user = await _context.Users.FindAsync(request.Id);
         return new GetUserResponse
         {
-            User = _mapper.Map<User>(user),
+            User = _mapper.Map<UserProto>(user),
         };
     }
 }
