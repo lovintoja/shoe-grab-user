@@ -38,5 +38,11 @@
   <ItemGroup>
     <Protobuf Include="../shoe-grab-common/shoe-grab-protos/*.proto" GrpcServices="Both" ProtoRoot="../shoe-grab-common/shoe-grab-protos" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Resources\" >
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Folder>
+  </ItemGroup>
 
 </Project>

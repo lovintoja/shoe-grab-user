@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ShoeGrabCommonModels.Contexts;
@@ -5,11 +7,28 @@ using ShoeGrabMonolith.Extensions;
 using ShoeGrabOrderManagement.Database.Mappers;
 using ShoeGrabUserManagement.Grpc;
 using ShoeGrabUserManagement.Services;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Controllers
 builder.Services.AddControllers();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(IPAddress.Any, 7212, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+        listenOptions.UseHttps("Resources\\server.pfx", "test123", httpsOptions =>
+        {
+            httpsOptions.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
+            httpsOptions.ClientCertificateValidation = (certificate, chain, errors) =>
+            {
+                return certificate.Thumbprint == "ExpectedClientThumbprint";
+            };
+        });
+    });
+});
 
 builder.Services.AddGrpc();
 builder.Services.AddAutoMapper(typeof(GrpcMappingProfile));
