@@ -58,12 +58,12 @@ namespace ShoeGrabUserManagement.Migrations
                 column: "UserId",
                 unique: true);
 
-            var passwordHash = "+0JUfw8ZJlZ0MEs9gf4VvcnjhWY59BZcn/Pg4FvpQNbrksULrNOI+Fc9klYSQ+EM";
+            var passwordHash = "InoFj91PPid3V/EKJ/jDZvxFRQ0rVdJtPafYHVltsfGKwWfzeo4r9uxE2FI9fUK7";
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Username", "Email", "PasswordHash", "Role" },
-                values: new object[] { "admin", "admin@gmail.com", passwordHash, UserRole.Admin }
+                values: new object[] { "admin", "user@example.com", passwordHash, UserRole.Admin }
             );
         }
 

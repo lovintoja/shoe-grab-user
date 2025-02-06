@@ -30,6 +30,16 @@ builder.WebHost.ConfigureKestrel(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddGrpc();
 builder.Services.AddAutoMapper(typeof(GrpcMappingProfile));
 
@@ -89,6 +99,7 @@ app.ApplyMigrations();
 //Security
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowAllOrigins");
 
 //Swagger
 if (app.Environment.IsDevelopment())
@@ -96,8 +107,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
 
 app.MapGrpcService<UserManagementService>();
 
