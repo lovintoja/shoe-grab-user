@@ -1,13 +1,47 @@
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 using ShoeGrabCommonModels.Contexts;
 using ShoeGrabMonolith.Extensions;
+using ShoeGrabOrderManagement.Database.Mappers;
+using ShoeGrabUserManagement.Grpc;
 using ShoeGrabUserManagement.Services;
+using System.Net;
 
 var builder = WebApplication.CreateBuilder(args);
 
 //Controllers
 builder.Services.AddControllers();
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(IPAddress.Any, 7212, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http2;
+        listenOptions.UseHttps("Resources\\server.pfx", "test123", httpsOptions =>
+        {
+            httpsOptions.ClientCertificateMode = ClientCertificateMode.RequireCertificate;
+        });
+    });
+    options.Listen(IPAddress.Any, 5155, listenOptions =>
+    {
+        listenOptions.Protocols = HttpProtocols.Http1;
+    });
+});
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+builder.Services.AddGrpc();
+builder.Services.AddAutoMapper(typeof(GrpcMappingProfile));
 
 //Swagger
 builder.Services.AddSwaggerGen(c =>
@@ -65,6 +99,7 @@ app.ApplyMigrations();
 //Security
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseCors("AllowAllOrigins");
 
 //Swagger
 if (app.Environment.IsDevelopment())
@@ -73,7 +108,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+app.MapGrpcService<UserManagementService>();
 
 app.MapControllers();
 

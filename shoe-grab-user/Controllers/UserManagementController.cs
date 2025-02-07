@@ -2,10 +2,11 @@
 using ShoeGrabUserManagement.Models.Dto;
 using ShoeGrabCommonModels.Contexts;
 using Microsoft.EntityFrameworkCore;
-using ShoeGrabCommonModels;
 using ShoeGrabUserManagement.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using User = ShoeGrabCommonModels.User;
+using ShoeGrabCommonModels;
 
 namespace ShoeGrabUserManagement.Controllers;
 [ApiController]
@@ -137,5 +138,16 @@ public class UserManagementController : ControllerBase
         return Ok(new { Message = "Profile updated successfully." });
     }
 
+    [HttpGet("role")]
+    [Authorize]
+    public async Task<ActionResult<string>> GetUserRole()
+    {
+        var userRole = User.FindFirst(ClaimTypes.Role)?.Value;
+        if (userRole == null)
+        {
+            return BadRequest();
+        }
 
+        return await Task.FromResult(Ok(new { userRole }));
+    }
 }

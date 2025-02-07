@@ -14,6 +14,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Google.Protobuf" Version="3.29.3" />
     <PackageReference Include="Grpc.AspNetCore" Version="2.67.0" />
     <PackageReference Include="Grpc.Tools" Version="2.69.0">
@@ -36,6 +37,12 @@
   
   <ItemGroup>
     <Protobuf Include="../shoe-grab-common/shoe-grab-protos/*.proto" GrpcServices="Both" ProtoRoot="../shoe-grab-common/shoe-grab-protos" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="Resources\" >
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	</Folder>
   </ItemGroup>
 
 </Project>
