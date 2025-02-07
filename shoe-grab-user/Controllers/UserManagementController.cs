@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
 using User = ShoeGrabCommonModels.User;
 using ShoeGrabCommonModels;
+using AutoMapper;
 
 namespace ShoeGrabUserManagement.Controllers;
 [ApiController]
@@ -16,12 +17,14 @@ public class UserManagementController : ControllerBase
     private readonly UserContext _context;
     private readonly ITokenService _tokenService;
     private readonly IPasswordManagement _passwordManagement;
+    private readonly IMapper _mapper;
 
-    public UserManagementController(UserContext context, ITokenService tokenService, IPasswordManagement passwordManagement)
+    public UserManagementController(UserContext context, ITokenService tokenService, IPasswordManagement passwordManagement, IMapper mapper)
     {
         _context = context;
         _tokenService = tokenService;
         _passwordManagement = passwordManagement;
+        _mapper = mapper;
     }
 
     [HttpPost("register")]
@@ -77,7 +80,7 @@ public class UserManagementController : ControllerBase
 
     [HttpGet("profile")]
     [Authorize]
-    public async Task<IActionResult> GetProfile()
+    public async Task<ActionResult<UserProfileWithUserDataDto>> GetProfile()
     {
         var userId = User.FindFirst(ClaimTypes.Authentication)?.Value;
         if (userId == null)
@@ -94,20 +97,19 @@ public class UserManagementController : ControllerBase
             return NotFound(new { Message = "User profile not found." });
         }
 
-        return Ok(new
+        var mappedProfile = _mapper.Map<UserProfileDto>(profile);
+        var response = new UserProfileWithUserDataDto
         {
-            profile.User.Username,
-            profile.User.Email,
-            profile.Address,
-            profile.PhoneNumber,
-            profile.DateOfBirth,
-            profile.Bio
-        });
+            Username = profile.User.Username,
+            Email = profile.User.Email,
+            Profile = mappedProfile
+        };
+        return Ok(response);
     }
 
-    [HttpGet("profile/update")]
+    [HttpPut("profile")]
     [Authorize]
-    public async Task<IActionResult> EditProfile([FromQuery]EditProfileDto profileDto)
+    public async Task<IActionResult> EditProfile(UserProfileDto profileDto)
     {
         if (!ModelState.IsValid)
         {
@@ -127,15 +129,22 @@ public class UserManagementController : ControllerBase
             return NotFound(new { Message = "User profile not found." });
         }
 
-        userProfile.Address = profileDto.Address;
-        userProfile.PhoneNumber = profileDto.PhoneNumber;
-        userProfile.Bio = profileDto.Bio;
-        userProfile.DateOfBirth = profileDto.DateOfBirth;
+        var mappedProfile = _mapper.Map<UserProfile>(profileDto);
+        
+        userProfile.PhoneNumber = mappedProfile.PhoneNumber;
+        userProfile.Address = mappedProfile.Address;
+        userProfile.DateOfBirth = mappedProfile.DateOfBirth;
+        userProfile.Bio = mappedProfile.Bio;
 
-        _context.Profiles.Update(userProfile);
-        await _context.SaveChangesAsync();
-
-        return Ok(new { Message = "Profile updated successfully." });
+        try
+        {
+            await _context.SaveChangesAsync();
+            return Ok(new { Success = true });
+        }
+        catch (Exception)
+        {
+            return Ok(new { Success = false });
+        }
     }
 
     [HttpGet("role")]
@@ -149,5 +158,39 @@ public class UserManagementController : ControllerBase
         }
 
         return await Task.FromResult(Ok(new { userRole }));
+    }
+
+    [HttpPut("password")]
+    [Authorize]
+    public async Task<IActionResult> ChangePassword(EditPasswordDto request)
+    {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        var userId = User.FindFirst(ClaimTypes.Authentication)?.Value;
+        if (userId == null)
+        {
+            return Unauthorized();
+        }
+        var user = await _context.Users.FindAsync(int.Parse(userId));
+
+        if (user == null) 
+        {
+            return NotFound("User not found");
+        }
+        var correctOldPassword = _passwordManagement.HashPassword(request.OldPassword) == user.PasswordHash;
+
+        if (!correctOldPassword)
+        {
+            return Unauthorized("Wrong password!");
+        }
+
+        user.PasswordHash = _passwordManagement.HashPassword(request.NewPassword);
+
+        await _context.SaveChangesAsync();
+
+        return Ok();
     }
 }
