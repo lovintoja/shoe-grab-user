@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+using Microsoft.AspNetCore.Server.Kestrel.Https;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
 using ShoeGrabCommonModels;
+using System.Net;
 using System.Security.Claims;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 
 namespace ShoeGrabMonolith.Extensions;
@@ -45,35 +48,44 @@ public static class BuilderExtension
         builder.Services.AddAuthorization();
     }
 
-    public static void SetupSwagger(this IServiceCollection services)
+    public static void SetupKestrel(this WebApplicationBuilder builder)
     {
-        services.AddSwaggerGen(c =>
+        builder.WebHost.ConfigureKestrel((context, options) =>
         {
-            c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
+            var kestrelSection = context.Configuration.GetSection("Kestrel:Endpoints");
 
-            c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+            var grpcEndpoint = kestrelSection.GetSection("Grpc");
+            if (grpcEndpoint.Exists())
             {
-                Description = "JWT Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-                Name = "Authorization",
-                In = ParameterLocation.Header,
-                Type = SecuritySchemeType.Http,
-                Scheme = "bearer"
-            });
-
-            c.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
+                var grpcUrl = new Uri(grpcEndpoint["Url"]);
+                options.Listen(IPAddress.Any, grpcUrl.Port, listenOptions =>
                 {
-                    new OpenApiSecurityScheme
+                    listenOptions.Protocols = Enum.Parse<HttpProtocols>(grpcEndpoint["Protocols"]);
+                    listenOptions.UseHttps(httpsOptions =>
                     {
-                        Reference = new OpenApiReference
+                        var certificatePath = grpcEndpoint["Certificate:Path"];
+                        var certificatePassword = grpcEndpoint["Certificate:Password"];
+                        var parseSuccess = Enum.TryParse(grpcEndpoint["Certificate:ClientCertificateMode"], out ClientCertificateMode clientCertificateMode);
+
+                        if (certificatePath != null && certificatePassword != null && parseSuccess)
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
+                            var certificate = new X509Certificate2(certificatePath, certificatePassword);
+                            httpsOptions.ServerCertificate = certificate;
+                            httpsOptions.ClientCertificateMode = clientCertificateMode;
                         }
-                    },
-                    new string[] {}
-                }
-            });
+                    });
+                });
+            }
+
+            var restApiEndpoint = kestrelSection.GetSection("RestApi");
+            if (restApiEndpoint.Exists())
+            {
+                var restApiUrl = new Uri(restApiEndpoint["Url"]);
+                options.Listen(IPAddress.Any, restApiUrl.Port, listenOptions =>
+                {
+                    listenOptions.Protocols = Enum.Parse<HttpProtocols>(restApiEndpoint["Protocols"]);
+                });
+            }
         });
     }
 }

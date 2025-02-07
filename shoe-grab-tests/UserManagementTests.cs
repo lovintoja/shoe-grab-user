@@ -162,7 +162,7 @@ public class UserManagementControllerTests
         _mockHelper.Profiles.Add(profile);
         SetAuthenticatedUser(testUserId);
 
-        var updateDto = new EditProfileDto
+        var updateDto = new UserProfileDto
         {
             Address = "New Address",
             PhoneNumber = "555-5678"
@@ -182,7 +182,7 @@ public class UserManagementControllerTests
     {
         // Arrange
         SetAuthenticatedUser(999);
-        var updateDto = new EditProfileDto();
+        var updateDto = new UserProfileDto();
 
         // Act
         var result = await _controller.EditProfile(updateDto);
