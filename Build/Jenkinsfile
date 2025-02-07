@@ -1,0 +1,43 @@
+pipeline {
+    agent {
+        docker {
+            image 'mcr.microsoft.com/dotnet/sdk:8.0' // Official .NET 8 SDK image
+            args '-u root' // Optional: Run as root user for broader permissions
+        }
+    }
+    environment {
+        DOTNET_CLI_TELEMETRY_OPTOUT = '1'
+        DOTNET_NOLOGO = '1'
+    }
+    stages {
+        stage('Restore Dependencies') {
+            steps {
+                echo 'Restoring dependencies...'
+                sh 'dotnet restore'
+            }
+        }
+        stage('Build') {
+            steps {
+                echo 'Building the application...'
+                sh 'dotnet build --configuration Release'
+            }
+        }
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                sh 'dotnet test --no-build --configuration Release'
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completed.'
+        }
+        success {
+            echo 'Build and tests succeeded!'
+        }
+        failure {
+            echo 'Build or tests failed.'
+        }
+    }
+}
