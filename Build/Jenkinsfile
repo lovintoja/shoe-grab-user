@@ -16,28 +16,20 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-				script {
-					dir('./Build') {
-						sh 'docker build -t $DOCKER_REPO .'
-					}
-				}
+                sh 'docker build -f ./Build/Dockerfile -t $DOCKER_REPO .'
             }
         }
         stage('Push Docker Image') {
             steps {
-                script {
-					withCredentials([usernamePassword(credentialsId: "$DOCKER_REGISTRY_CREDENTIALS",
+                withCredentials([usernamePassword(credentialsId: "$DOCKER_REGISTRY_CREDENTIALS",
                                                   usernameVariable: 'DOCKER_USERNAME',
                                                   passwordVariable: 'DOCKER_PASSWORD')]) {
-						dir('./Build') {
-							sh '''
-							docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
-							docker push $DOCKER_REPO
-							docker logout
-							'''
-						}
-					}
-				}
+                    sh '''
+                    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+                    docker push $DOCKER_REPO
+                    docker logout
+                    '''
+                }
             }
         }
     }
