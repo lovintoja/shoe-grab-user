@@ -40,9 +40,15 @@
   </ItemGroup>
   
   <ItemGroup>
-    <Folder Include="Resources\" >
+    <Folder Include="Resources\">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
 	</Folder>
+  </ItemGroup>
+  
+  <ItemGroup>
+    <None Update="Resources\server.pfx">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
