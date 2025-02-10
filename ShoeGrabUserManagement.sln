@@ -5,8 +5,6 @@ VisualStudioVersion = 17.10.35027.167
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabUserManagement", "shoe-grab-user\ShoeGrabUserManagement.csproj", "{EE954555-DA11-4DA4-B53C-504680EACC13}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabUserManagementTests", "shoe-grab-tests\ShoeGrabUserManagementTests.csproj", "{BB5F71D6-A746-4935-A2EE-E88B83B2791C}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ShoeGrabCommonModels", "shoe-grab-common\shoe-grab-common-lib\ShoeGrabCommonModels.csproj", "{A1202009-D8F7-4798-AD8B-94E7741BE7B6}"
 EndProject
 Global
@@ -19,10 +17,6 @@ Global
 		{EE954555-DA11-4DA4-B53C-504680EACC13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EE954555-DA11-4DA4-B53C-504680EACC13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EE954555-DA11-4DA4-B53C-504680EACC13}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BB5F71D6-A746-4935-A2EE-E88B83B2791C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BB5F71D6-A746-4935-A2EE-E88B83B2791C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BB5F71D6-A746-4935-A2EE-E88B83B2791C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BB5F71D6-A746-4935-A2EE-E88B83B2791C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A1202009-D8F7-4798-AD8B-94E7741BE7B6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A1202009-D8F7-4798-AD8B-94E7741BE7B6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A1202009-D8F7-4798-AD8B-94E7741BE7B6}.Release|Any CPU.ActiveCfg = Release|Any CPU
