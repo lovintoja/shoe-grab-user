@@ -27,6 +27,7 @@ pipeline {
                     sh '''
                     docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
                     docker push $DOCKER_REPO
+					docker rmi $DOCKER_REPO
                     docker logout
                     '''
                 }
