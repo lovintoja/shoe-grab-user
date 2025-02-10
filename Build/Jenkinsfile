@@ -5,6 +5,7 @@ pipeline {
         DOTNET_NOLOGO = '1'
         DOCKER_REPO = 'fiflakToJa/shoe-grab:user'
         DOCKER_REGISTRY_CREDENTIALS = 'DOCKER_HUB_CREDENTIALS'
+		DOTNET_CLI_HOME = '/.dotnet'
     }
     stages {
         stage('Restore and Build') {
