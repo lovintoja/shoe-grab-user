@@ -3,7 +3,7 @@ pipeline {
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
         DOTNET_NOLOGO = '1'
-        DOCKER_REPO = 'fiflakToJa/shoe-grab:user'
+        DOCKER_REPO = 'fiflaktoja/shoe-grab:user'
         DOCKER_REGISTRY_CREDENTIALS = 'DOCKER_HUB_CREDENTIALS'
 		DOTNET_CLI_HOME = '/.dotnet'
     }
