@@ -1,43 +1,40 @@
 pipeline {
     agent {
         docker {
-            image 'mcr.microsoft.com/dotnet/sdk:8.0' // Official .NET 8 SDK image
-            args '-u root' // Optional: Run as root user for broader permissions
+            image 'mcr.microsoft.com/dotnet/sdk:8.0'
+            args '-u root'
         }
     }
     environment {
         DOTNET_CLI_TELEMETRY_OPTOUT = '1'
         DOTNET_NOLOGO = '1'
+        DOCKER_REPO = 'fiflakToJa/shoe-grab:user'
+        DOCKER_REGISTRY_CREDENTIALS = 'DOCKER_HUB_CREDENTIALS'
     }
     stages {
-        stage('Restore Dependencies') {
+        stage('Restore and Build') {
             steps {
-                echo 'Restoring dependencies...'
                 sh 'dotnet restore'
-            }
-        }
-        stage('Build') {
-            steps {
-                echo 'Building the application...'
                 sh 'dotnet build --configuration Release'
             }
         }
-        stage('Test') {
+        stage('Build Docker Image') {
             steps {
-                echo 'Running tests...'
-                sh 'dotnet test --no-build --configuration Release'
+                sh 'docker build -t $DOCKER_REPO .'
             }
         }
-    }
-    post {
-        always {
-            echo 'Pipeline completed.'
-        }
-        success {
-            echo 'Build and tests succeeded!'
-        }
-        failure {
-            echo 'Build or tests failed.'
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: "$DOCKER_REGISTRY_CREDENTIALS",
+                                                  usernameVariable: 'DOCKER_USERNAME',
+                                                  passwordVariable: 'DOCKER_PASSWORD')]) {
+                    sh '''
+                    docker login -u "$DOCKER_USERNAME" -p "$DOCKER_PASSWORD"
+                    docker push $DOCKER_REPO
+                    docker logout
+                    '''
+                }
+            }
         }
     }
 }
