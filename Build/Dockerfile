@@ -12,5 +12,5 @@ WORKDIR /app
 COPY --from=build /out .
 EXPOSE 10001
 EXPOSE 10002
-ENV DB_CONNECTION_STRING="Host=your-db-vm-ip;Port=5432;Database=your-db-name;Username=your-username;Password=your-password;"
+ENV DB_CONNECTION_STRING="Host=192.168.0.121;Port=30002;Database=db2;Username=admin;Password=admin"
 ENTRYPOINT ["dotnet", "shoe-grab-user.dll"]
