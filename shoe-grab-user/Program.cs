@@ -29,11 +29,23 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddHttpClient();
 
 //Contexts
-builder.Services.AddDbContextPool<UserContext>(opt =>
-  opt.UseNpgsql(
-    builder.Configuration.GetConnectionString("PostgreSQL"),
-    o => o
-      .SetPostgresVersion(17, 0)));
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContextPool<UserContext>(opt =>
+        opt.UseNpgsql(
+            builder.Configuration.GetConnectionString("DB_CONNECTION_STRING"),
+            o => o
+                .SetPostgresVersion(17, 0)));
+}
+else
+{
+    builder.Services.AddDbContextPool<UserContext>(opt =>
+        opt.UseNpgsql(
+            Environment.GetEnvironmentVariable("DB_CONNECTION_STRING"),
+            o => o
+                .SetPostgresVersion(17, 0)));
+}
+
 
 //Services
 builder.Services.AddScoped<IPasswordManagement, PasswordManagement>();
