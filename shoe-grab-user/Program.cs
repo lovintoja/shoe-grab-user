@@ -62,10 +62,10 @@ var app = builder.Build();
 app.ApplyMigrations();
 
 //Security
+app.UseCors("AllowAllOrigins");
+
 app.UseAuthentication();
 app.UseAuthorization();
-
-app.UseCors("AllowAllOrigins");
 
 app.MapGrpcService<UserManagementService>();
 
